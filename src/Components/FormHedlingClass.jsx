@@ -1,6 +1,7 @@
 import React, { Component } from "react"
 import { Form, Button, Card, ListGroup } from "react-bootstrap"
 import "../Assets/css/FormHedlingClass.css"
+import { jsx } from "@emotion/react"
 
 export default class FormHedlingClass extends Component {
     constructor(props) {
@@ -8,17 +9,23 @@ export default class FormHedlingClass extends Component {
 
         this.state = {
             obj: {},
-            count: 0,
-            userArray: [],
+            count: JSON.parse(localStorage.getItem("count")) ?? 0,
+            userArray: JSON.parse(localStorage.getItem("userArray")) ?? [],
             blankObj: {},
         }
     }
 
-    getData = (e) => {
-        if (e.target.type == "checkbox") {
+    getData = async (e) => {
+        if (e.target.type === "checkbox") {
+            // this.state.obj[e.target.name] = this.state.obj[e.target.name] ?? []
             this.state.obj[e.target.name] = this.state.obj[e.target.name] ?? []
+            // this.state.blankObj[e.target.name] = []
             this.state.blankObj[e.target.name] = []
             if (e.target.checked) {
+                // this.state.obj[e.target.name] = [
+                //     ...this.state.obj[e.target.name],
+                //     e.target.value,
+                // ]
                 this.state.obj[e.target.name] = [
                     ...this.state.obj[e.target.name],
                     e.target.value,
@@ -26,8 +33,11 @@ export default class FormHedlingClass extends Component {
             } else {
                 this.state.obj[e.target.name] = this.state.obj[
                     e.target.name
-                ].filter((x) => x != e.target.value)
+                ].filter((x) => x !== e.target.value)
             }
+        } else if (e.target.type === "file") {
+            this.state.obj[e.target.name] = await this.toBase64(e.target.files[0])
+             this.state.blankObj[e.target.name] = ""
         } else {
             this.state.obj[e.target.name] = e.target.value
             this.state.blankObj[e.target.name] = ""
@@ -39,6 +49,7 @@ export default class FormHedlingClass extends Component {
             this.state.count = this.state.count + 1
             this.state.obj.id = this.state.count
             this.state.userArray.push(this.state.obj)
+            localStorage.setItem("count", JSON.stringify(this.state.count))
         } else {
             let index = this.state.userArray.findIndex(
                 (x) => x.id == this.state.obj.id
@@ -46,6 +57,7 @@ export default class FormHedlingClass extends Component {
             this.state.userArray.splice(index, 1, this.state.obj)
         }
         this.state.obj = { ...this.state.blankObj }
+        localStorage.setItem("userArray", JSON.stringify(this.state.userArray))
         this.setState({ ...this.state })
     }
 
@@ -60,6 +72,14 @@ export default class FormHedlingClass extends Component {
         this.state.userArray.splice(index, 1)
         this.setState({ ...this.state })
     }
+
+    toBase64 = (file) =>
+        new Promise((resolve, reject) => {
+            const reader = new FileReader()
+            reader.readAsDataURL(file)
+            reader.onload = () => resolve(reader.result)
+            reader.onerror = reject
+        })
 
     render() {
         return (
@@ -179,6 +199,27 @@ export default class FormHedlingClass extends Component {
                             value="Coding"
                         />
                     </Form.Group>
+
+                    <Form.Group className="mb-3 mt-3">
+                        <Form.Label>Upload Image</Form.Label>
+                        <Form.Control
+                            type="file"
+                            name="profileImg"
+                            onChange={this.getData}
+                            style={{ width: "auto", height: "auto" }}
+                        />
+                    </Form.Group>
+                    <img
+                        src={this.state.obj.profileImg}
+                        style={{
+                            width: "auto",
+                            height: "auto",
+                            maxWidth: "100px",
+                            maxHeight: "100px",
+                        }}
+                        alt=""
+                    />
+                    <br />
 
                     <Button
                         onClick={this.saveData}
