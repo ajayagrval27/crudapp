@@ -1,7 +1,7 @@
 import React, { Component } from "react"
 import { Form, Button, Card, ListGroup } from "react-bootstrap"
 import "../Assets/css/FormHedlingClass.css"
-import { jsx } from "@emotion/react"
+
 
 export default class FormHedlingClass extends Component {
     constructor(props) {
