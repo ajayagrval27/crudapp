@@ -1,14 +1,16 @@
 import React from "react"
+import { useState } from "react"
 
 const ChildToPerent = (props) => {
-
-    console.log(props);
+    const [date, setdate] = useState("kgjg,ucoivk jgcxzvcbo") 
 
     return (
-        <div>
+        <>
             <h2>child to parent data : {props.name}</h2>
-            <button onClick={() => props.data("updated New Name")}>Click</button>
-        </div>
+            <button onClick={() => props.data(date)}>
+                Click
+            </button>
+        </>
     )
 }
 
