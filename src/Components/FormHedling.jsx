@@ -1,6 +1,7 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { Button, Card, Form, ListGroup } from "react-bootstrap"
 import "../Assets/css/FormHedling.css"
+
 
 const FormHedling = () => {
     let [userObj, setuserObj] = useState({})
@@ -8,6 +9,14 @@ const FormHedling = () => {
     let [countId, setcountId] = useState(JSON.parse(localStorage.getItem("countID")) || 0)
     const [blankObj, setblankObj] = useState({})
 
+    // life cycle method
+
+    useEffect(() => {
+        localStorage.setItem("userArr", JSON.stringify(userArr))
+        localStorage.setItem("countID", JSON.stringify(countId))
+        console.log("useEffect", userArr);
+        console.log("useEffect", countId);
+    } , [userArr, countId])
 
     const saveData = async (e) => {
         if (e.target.type === "checkbox") {
@@ -24,7 +33,7 @@ const FormHedling = () => {
                 )
             }
         } else if (e.target.type === "file") {
-            console.log(e.target)
+            // console.log(e.target)
             userObj[e.target.name] = await toBase64(e.target.files[0])
             blankObj[e.target.name] = ""
         } else {
@@ -41,13 +50,13 @@ const FormHedling = () => {
             setcountId(countId)
             userObj.id = countId
             userArr.push(userObj)
-            localStorage.setItem("countID", JSON.stringify(countId))
+            // localStorage.setItem("countID", JSON.stringify(countId))
         } else {
             let index = userArr.findIndex((x) => x.id === userObj.id)
             userArr.splice(index, 1, userObj)
         }
         setuserArr([...userArr])
-        localStorage.setItem("userArr", JSON.stringify(userArr))
+        // localStorage.setItem("userArr", JSON.stringify(userArr))
         userObj = blankObj
         setuserObj({ ...userObj })
     }

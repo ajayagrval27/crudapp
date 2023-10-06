@@ -15,17 +15,27 @@ export default class FormHedlingClass extends Component {
         }
     }
 
+    //* life cycle method
+
+    componentDidUpdate() {
+        localStorage.setItem("userArray", JSON.stringify(this.state.userArray))
+        localStorage.setItem("count", JSON.stringify(this.state.count))
+        console.log("componentDidUpdate", this.state.userArray);
+        console.log("componentDidUpdate", this.state.count);
+    }
+
+    // * life cycle method to change state before render
+
+    static getDerivedStateFromProps(props, state) {
+        console.log("getDerivedStateFromProps", props, state)
+        return state
+    }
+
     getData = async (e) => {
         if (e.target.type === "checkbox") {
-            // this.state.obj[e.target.name] = this.state.obj[e.target.name] ?? []
             this.state.obj[e.target.name] = this.state.obj[e.target.name] ?? []
-            // this.state.blankObj[e.target.name] = []
             this.state.blankObj[e.target.name] = []
             if (e.target.checked) {
-                // this.state.obj[e.target.name] = [
-                //     ...this.state.obj[e.target.name],
-                //     e.target.value,
-                // ]
                 this.state.obj[e.target.name] = [
                     ...this.state.obj[e.target.name],
                     e.target.value,
@@ -49,7 +59,7 @@ export default class FormHedlingClass extends Component {
             this.state.count = this.state.count + 1
             this.state.obj.id = this.state.count
             this.state.userArray.push(this.state.obj)
-            localStorage.setItem("count", JSON.stringify(this.state.count))
+            // localStorage.setItem("count", JSON.stringify(this.state.count))
         } else {
             let index = this.state.userArray.findIndex(
                 (x) => x.id == this.state.obj.id
@@ -57,7 +67,7 @@ export default class FormHedlingClass extends Component {
             this.state.userArray.splice(index, 1, this.state.obj)
         }
         this.state.obj = { ...this.state.blankObj }
-        localStorage.setItem("userArray", JSON.stringify(this.state.userArray))
+        // localStorage.setItem("userArray", JSON.stringify(this.state.userArray))
         this.setState({ ...this.state })
     }
 
